@@ -1,10 +1,8 @@
-import java.util.AbstractCollection;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.NoSuchElementException; 
+import java.util.*;
 
-
+/**
+ * Implantation de l'interface Collection basée sur les arbres binaires de recherche.
+ */
 public class ABR<E> extends AbstractCollection<E> {
     private Noeud racine;
     private int taille;
@@ -18,9 +16,6 @@ public class ABR<E> extends AbstractCollection<E> {
 
         Noeud(E cle) {
             this.cle = cle;
-            this.pare=null;
-            this.gauche=null;
-            this.droite=null;
         }
 
         Noeud minimum() {
@@ -69,16 +64,9 @@ public class ABR<E> extends AbstractCollection<E> {
     public Noeud rechercher(Object o) {
         Noeud current = racine;
         while (current != null) {
-            int comparaison = comparer((E) o, current.cle);
-            if (comparaison == 0) {
-                return current;
-            else if (comparaison<0 ){
-                current=current.gauche;
-            }else{
-                current=current.droit;
-
-            }
-           
+            int cmpResult = comparer((E) o, current.cle);
+            if (cmpResult == 0) return current;
+            current = cmpResult < 0 ? current.gauche : current.droit;
         }
         return null;
     }
@@ -140,9 +128,9 @@ public class ABR<E> extends AbstractCollection<E> {
 
     @Override
     public boolean remove(Object o) {
-        Noeud z = rechercher(o);
-        if (z== null) return false;
-        supprimer(z);
+        Noeud node = rechercher(o);
+        if (node == null) return false;
+        supprimer(node);
         taille--;
         return true;
     }
@@ -156,9 +144,7 @@ public class ABR<E> extends AbstractCollection<E> {
     }
 
     public class ABRIterator implements Iterator<E> {
-        // Le noeud qui contient la clé qui sera retournée par next()
         private Noeud prochain = (racine == null) ? null : racine.minimum();
-       
         private Noeud dernier;
 
         @Override
